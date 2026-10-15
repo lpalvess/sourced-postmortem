@@ -31,6 +31,23 @@ abspath() {
   if [ -d "$p" ]; then (cd "$p" && pwd -P); else echo "$(cd "$(dirname "$p")" && pwd -P)/$(basename "$p")"; fi
 }
 
+# Caminho absoluto resolvido (links simbólicos incluídos) de um destino que pode
+# ainda não existir: resolve o ancestral existente e anexa o restante, sem criar nada.
+resolve_target() {
+  local p="$1" rest="" base name
+  while [ "${#p}" -gt 1 ] && [ "${p%/}" != "$p" ]; do p="${p%/}"; done
+  base="$p"
+  while [ ! -e "$base" ]; do
+    name="$(basename "$base")"
+    case "$name" in .. | .) die "caminho de saída inexistente com . ou .. no meio: $1" ;; esac
+    rest="/$name$rest"
+    base="$(dirname "$base")"
+  done
+  [ -d "$base" ] || die "a saída $1 não pode ser criada: $base não é uma pasta"
+  base="$(cd "$base" && pwd -P)"
+  if [ "$base" = / ]; then echo "$rest"; else echo "$base$rest"; fi
+}
+
 bind() { echo "type=bind,src=$1,dst=$2$3"; }
 
 SECURE=(
@@ -111,8 +128,7 @@ fi
 
 [ "$out_set" -eq 1 ] || out="sourced-postmortem-out"
 case "$out" in *,* | *$'\n'*) die "o caminho contém vírgula ou quebra de linha: $out" ;; esac
-mkdir -p "$out"
-out_abs="$(cd "$out" && pwd -P)"
+out_abs="$(resolve_target "$out")"
 # Os caminhos já resolvidos (cwd e links simbólicos incluídos) também não podem ter vírgula.
 no_comma "$doc_abs"
 no_comma "$ev_abs"
@@ -122,6 +138,7 @@ no_comma "$out_abs"
 case "$out_abs/" in
   "$ev_abs"/*) die "a pasta de saída não pode ficar dentro da pasta de evidências: $out_abs" ;;
 esac
+mkdir -p "$out_abs"
 mounts+=(--mount "$(bind "$out_abs" /out "")")
 
 need_docker

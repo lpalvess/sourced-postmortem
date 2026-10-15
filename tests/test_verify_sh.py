@@ -92,6 +92,15 @@ class SemDockerTest(Base):
         self.assertEqual(r.returncode, 2, r.stderr)
         self.assertIn("evidências", r.stderr)
 
+    def test_saida_recusada_nao_cria_pasta_nas_evidencias(self):
+        antes = sorted(p.name for p in self.ev.rglob("*"))
+        for destino in (self.ev / "sub", self.ev / "a" / "b" / "c"):
+            r = self.run_script([str(self.doc), str(self.ev), "--out", str(destino)], self.bin)
+            self.assertEqual(r.returncode, 2, r.stderr)
+        self.assertEqual(sorted(p.name for p in self.ev.rglob("*")), antes)
+        self.assertFalse((self.ev / "sub").exists())
+        self.assertFalse((self.ev / "a").exists())
+
     def test_saida_dentro_das_evidencias_via_relativo_sai_2(self):
         r = subprocess.run(
             [BASH, str(SCRIPT), str(self.doc), str(self.ev), "--out", "../evidencias/x/../saida"],
