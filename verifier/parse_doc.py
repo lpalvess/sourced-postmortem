@@ -107,8 +107,6 @@ def _parse_actions(sec: Section) -> list[Action]:
             if cols is None or not any(cells):
                 continue
             vals = {f: (cells[i2] if i2 < len(cells) else "") for f, i2 in cols.items()}
-            if not vals.get("texto"):
-                continue
             out.append(Action(n, **vals))
             continue
         m = LIST_ITEM.match(t)

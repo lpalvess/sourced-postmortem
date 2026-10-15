@@ -93,6 +93,14 @@ class ParseDocTest(unittest.TestCase):
         self.assertEqual(x.incident_date, y.incident_date)
         self.assertEqual(x.severity, y.severity)
 
+    def test_acao_sem_texto_mas_com_dono(self):
+        d = self.parse({"| Reduzir o limiar do alerta de erro para 5% | @joao | PAY-102 | P2 | detect | 2026-10-10 | checkout-api |":
+                        "|  | @joao | PAY-102 | P2 | detect | 2026-10-10 | checkout-api |\n|  |  |  |  |  |  |  |"})
+        self.assertEqual(len(d.actions), 3)
+        a = d.actions[1]
+        self.assertEqual((a.texto, a.dono, a.ticket, a.prioridade, a.tipo, a.prazo, a.componente),
+                         ("", "@joao", "PAY-102", "P2", "detect", "2026-10-10", "checkout-api"))
+
     def test_segredo_oculto(self):
         old = "- 15:05 [reconhecimento] Plantão reconheceu o alerta."
         d = self.parse({old: old + " token=abc123segredo"})
