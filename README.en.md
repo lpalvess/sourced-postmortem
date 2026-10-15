@@ -108,10 +108,10 @@ Level `reprova` (fail) makes the script exit with code 1. Level `aviso` (warning
 | E2 | reprova | Number in the summary or impact that is not in the evidence and is not a computed metric | G3 |
 | M1 | reprova | Missing milestones (inicio, deteccao, mitigacao or fim) | G2, A2, P6, F1 |
 | M2 | reprova | Milestones out of order | F1 |
-| M3 | reprova | Quoted duration differs from the recomputed one | F1, G2 |
+| M3 | reprova | Quoted duration differs from the recomputed one (a gap under 1 minute is allowed; 1 minute or more fails) | F1, G2 |
 | T1 | reprova | Time zone not declared | G2, A2, I2 |
 | T2 | reprova | Timeline entries out of chronological order | A2 |
-| T3 | aviso | Vague time ("cerca de", "aprox", "~") | A1 |
+| T3 | aviso | Vague time ("cerca de", "aprox", "~", "around", "approx") | A1 |
 | T4 | aviso | First entry is not earlier than the start | P4, G2 |
 | T5 | aviso | Ambiguous date not interpreted (`formato_data` missing) | interno |
 | T6 | aviso | Evidence without time zone: the document's was assumed | interno |
@@ -127,7 +127,7 @@ Level `reprova` (fail) makes the script exit with code 1. Level `aviso` (warning
 
 ### Configuration
 
-The `sourced-postmortem.toml` is optional. It adjusts the profile, the levels, the milestones and the team map. An unknown key, an invalid level or a nonexistent rule ID gives exit code 3. The message carries the file name and the key name; only TOML syntax errors also carry line and column.
+The `sourced-postmortem.toml` is optional. It adjusts the profile, the levels, the milestones and the team map. An unknown key, an invalid level or a nonexistent rule ID gives exit code 3. The message carries the file name and the key name; only TOML syntax errors also carry line and column. A `prazo_dias` you supply replaces the whole default table (it does not merge): severities you do not list get no deadline.
 
 ```toml
 [perfil]
@@ -159,7 +159,7 @@ membros = ["@maria"]
 | 1 | Failed: at least one rule at level `reprova`. |
 | 2 | Invalid input: missing file, document without a timeline, evidence above the limit, output folder inside the evidence folder. |
 | 3 | Invalid configuration (TOML). |
-| 4 | Docker missing or stopped. |
+| 4 | Docker missing or stopped, or the container could not start (`docker run` returned 125 or more). |
 
 ## Common problems
 
@@ -184,7 +184,7 @@ membros = ["@maria"]
 What the project guarantees, by construction:
 
 - The verifier runs in a container with `--network none`: no network at runtime, no telemetry.
-- The code and the inputs are mounted read-only, and only the output folder is writable. The process runs as a non-root user.
+- The code and the inputs are mounted read-only, and only the output folder is writable. The process runs as the calling user (not as root unless the caller is root).
 - Credentials are hidden before any other step, and the report carries only excerpts already free of credentials.
 - The postmortem and the evidence are read as data, never executed.
 - No dependencies beyond the Python standard library.

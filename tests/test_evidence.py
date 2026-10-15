@@ -40,6 +40,12 @@ class EvidenceTests(unittest.TestCase):
             self.assertIn(n, ev.numbers)
         self.assertEqual(ev.assumed_tz_files, [])
 
+    def test_lone_cr_splits_lines(self):
+        folder = self.folder({"cr.log": "2026-09-14T15:01:00Z a\r2026-09-14T15:02:00Z b\r"
+                              "2026-09-14T15:03:00Z c\r\n2026-09-14T15:04:00Z d\n"})
+        ev = load_evidence(folder, Config(), **KW)
+        self.assertEqual([r.line for r in ev.records], [1, 2, 3, 4])
+
     def test_limit(self):
         folder = self.folder({"big.log": "x" * (2 * 1024 * 1024)})
         with self.assertRaises(InputError) as cm:

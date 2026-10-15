@@ -26,4 +26,5 @@ In scope:
 - Running the tool outside the provided container script and then reporting problems caused by that environment.
 - Issues that need a modified copy of the code, or a modified container setup.
 - Older commits and forks.
+- Credentials in formats outside the masked patterns, such as `Authorization: Basic ...` or `X-Api-Key` style headers (these are known gaps, not vulnerabilities).
 - Wrong or missing findings in a report (open a regular issue instead).

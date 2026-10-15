@@ -48,7 +48,7 @@ def load_evidence(folder: str | Path, cfg: Config, *, default_date: date | None,
     for p in files:
         rel = redact(p.relative_to(root).as_posix(), "")[0]
         raw = p.read_text(encoding="utf-8-sig", errors="replace")
-        text, found = redact(raw, rel)
+        text, found = redact(raw.replace("\r\n", "\n").replace("\r", "\n"), rel)
         redactions.extend(found)
         file_assumed = False
         for n, line in enumerate(text.split("\n"), 1):

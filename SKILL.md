@@ -74,7 +74,7 @@ Nível `reprova` faz o script sair com código 1. Nível `aviso` aparece no rela
 | E2 | reprova | Número do resumo ou do impacto que não está nas evidências nem é métrica calculada. | G3 |
 | M1 | reprova | Faltam marcos (inicio, deteccao, mitigacao ou fim). | G2, A2, P6, F1 |
 | M2 | reprova | Marcos fora da ordem inicio, deteccao, reconhecimento, mitigacao, fim. | F1 |
-| M3 | reprova | Duração citada diferente da recalculada (com rótulo, contra a métrica do rótulo; sem rótulo, contra qualquer métrica). | F1, G2 |
+| M3 | reprova | Duração citada diferente da recalculada (com rótulo, contra a métrica do rótulo; sem rótulo, contra qualquer métrica). Diferença menor que 1 minuto é aceita; 1 minuto ou mais reprova (mais `tolerancia_segundos`). | F1, G2 |
 | T1 | reprova | Fuso horário não declarado. | G2, A2, I2 |
 | T2 | reprova | Entradas da timeline fora de ordem cronológica. | A2 |
 | T3 | aviso | Horário vago ("cerca de", "aprox", "~", "around", "approx"). | A1 |
@@ -99,7 +99,7 @@ Nível `reprova` faz o script sair com código 1. Nível `aviso` aparece no rela
 | 1 | Reprovado: pelo menos uma regra de nível `reprova`. |
 | 2 | Entrada inválida: arquivo ausente, documento sem timeline, evidências acima de `limite_evidencias_mb`, pasta de saída dentro da pasta de evidências. |
 | 3 | Configuração inválida (TOML). |
-| 4 | Docker ausente ou parado. Avise o usuário e não tente outro caminho para rodar. |
+| 4 | Docker ausente ou parado, ou o contêiner não pôde ser iniciado (`docker run` devolveu 125 ou mais). Avise o usuário e não tente outro caminho para rodar. |
 
 Com código 2, 3 ou 4, mostre a mensagem do script ao usuário e pare. Não "conserte" rodando o verificador de outro jeito.
 

@@ -108,10 +108,10 @@ Nível `reprova` faz o script sair com código 1. Nível `aviso` aparece no rela
 | E2 | reprova | Número do resumo ou do impacto que não está nas evidências nem é métrica calculada | G3 |
 | M1 | reprova | Faltam marcos (inicio, deteccao, mitigacao ou fim) | G2, A2, P6, F1 |
 | M2 | reprova | Marcos fora da ordem | F1 |
-| M3 | reprova | Duração citada diferente da recalculada | F1, G2 |
+| M3 | reprova | Duração citada diferente da recalculada (diferença menor que 1 minuto é aceita; 1 minuto ou mais reprova) | F1, G2 |
 | T1 | reprova | Fuso horário não declarado | G2, A2, I2 |
 | T2 | reprova | Entradas da timeline fora de ordem cronológica | A2 |
-| T3 | aviso | Horário vago ("cerca de", "aprox", "~") | A1 |
+| T3 | aviso | Horário vago ("cerca de", "aprox", "~", "around", "approx") | A1 |
 | T4 | aviso | Primeira entrada não é anterior ao início | P4, G2 |
 | T5 | aviso | Data ambígua não interpretada (falta `formato_data`) | interno |
 | T6 | aviso | Evidência sem fuso: foi assumido o do documento | interno |
@@ -127,7 +127,7 @@ Nível `reprova` faz o script sair com código 1. Nível `aviso` aparece no rela
 
 ### Configuração
 
-O `sourced-postmortem.toml` é opcional. Ele ajusta o perfil, os níveis, os marcos e o mapa de times. Chave desconhecida, nível inválido ou ID de regra inexistente dão código 3. A mensagem traz o nome do arquivo e o nome da chave; só erro de sintaxe do TOML traz também linha e coluna.
+O `sourced-postmortem.toml` é opcional. Ele ajusta o perfil, os níveis, os marcos e o mapa de times. Chave desconhecida, nível inválido ou ID de regra inexistente dão código 3. A mensagem traz o nome do arquivo e o nome da chave; só erro de sintaxe do TOML traz também linha e coluna. Um `prazo_dias` informado por você substitui a tabela padrão inteira (não mescla): severidades que você não listar ficam sem prazo.
 
 ```toml
 [perfil]
@@ -159,7 +159,7 @@ membros = ["@maria"]
 | 1 | Reprovado: pelo menos uma regra de nível `reprova`. |
 | 2 | Entrada inválida: arquivo ausente, documento sem timeline, evidências acima do limite, pasta de saída dentro da de evidências. |
 | 3 | Configuração inválida (TOML). |
-| 4 | Docker ausente ou parado. |
+| 4 | Docker ausente ou parado, ou o contêiner não pôde ser iniciado (`docker run` devolveu 125 ou mais). |
 
 ## Problemas comuns
 
@@ -184,7 +184,7 @@ membros = ["@maria"]
 O que o projeto garante, por construção:
 
 - O verificador roda em contêiner com `--network none`: sem rede em tempo de execução, sem telemetria.
-- O código e as entradas são montados somente leitura, e só a pasta de saída é gravável. O processo roda como usuário não root.
+- O código e as entradas são montados somente leitura, e só a pasta de saída é gravável. O processo roda com o usuário que chamou o script (não é root, a menos que quem chama seja root).
 - Credenciais são ocultadas antes de qualquer outra etapa, e o relatório traz só trechos já sem credenciais.
 - O postmortem e as evidências são lidos como dado, nunca executados.
 - Não há dependências além da biblioteca padrão do Python.
