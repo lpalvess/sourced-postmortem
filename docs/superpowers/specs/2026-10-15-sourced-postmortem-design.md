@@ -1,6 +1,6 @@
 # sourced-postmortem: spec de design (v1)
 
-Data: 2026-10-15. Status: aguardando revisão do autor.
+Data: 2026-10-15. Status: implementada na v1; emendada em 2026-10-15 para refletir decisões da implementação (seções 6, 9, 12 e 14).
 
 ## 1. Objetivo
 
@@ -153,11 +153,12 @@ Roda sobre o documento e sobre cada evidência **antes** de qualquer extração.
 | slack-token | `xox[baprs]-...` |
 | jwt | três blocos base64url separados por ponto, começando em `eyJ` |
 | bearer | `Bearer <token>` |
-| private-key | bloco `-----BEGIN ... PRIVATE KEY-----` até `END` |
-| senha-chave | valor após `password`, `passwd`, `senha`, `secret`, `token`, `api_key`, `apikey` seguidos de `=` ou `:` |
+| private-key | bloco `-----BEGIN ... PRIVATE KEY-----` até `END`; sem `END` (log truncado), do cabeçalho até a próxima linha em branco ou o fim do texto |
+| senha-chave | valor após `password`, `passwd`, `senha`, `secret`, `token`, `api_key`, `apikey` seguidos de `=` ou `:`; valor entre aspas é ocultado até a aspa de fechamento, mesmo com espaços |
 | url-credencial | `scheme://usuario:senha@host` |
 
 - O relatório informa a contagem e, para cada ocultação, o tipo, o arquivo e a linha. **Nunca o valor.**
+- Os nomes de arquivo exibidos no relatório e o traceback de erro inesperado também passam pela ocultação.
 - Ocultar não reprova o documento.
 - A skill não lê as evidências diretamente, só o relatório.
 - Limite: um segredo colado no chat já está na conversa. O plugin só garante que ele não vá parar nos arquivos gerados. O PRIVACY.md diz isso.
@@ -235,7 +236,7 @@ componentes = ["ingress", "kafka"]
 membros = ["@maria"]
 ```
 
-Chave desconhecida, nível inválido ou ID de regra inexistente dão código 3, com a linha do erro.
+Chave desconhecida, nível inválido ou ID de regra inexistente dão código 3. A mensagem traz o nome do arquivo e o nome da chave; só erro de sintaxe do TOML traz também linha e coluna (vêm do `tomllib`).
 
 ## 10. Diagrama (`excalidraw.py`)
 
@@ -295,8 +296,8 @@ Frontmatter: `allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/verify.sh *)`.
 |---|---|
 | 0 | aprovado (pode ter avisos) |
 | 1 | reprovado |
-| 2 | entrada inválida: arquivo ausente, documento sem timeline, evidências acima de `limite_evidencias_mb` |
-| 3 | configuração inválida |
+| 2 | entrada inválida: postmortem ou pasta de evidências ausente, documento sem timeline, evidências acima de `limite_evidencias_mb`, pasta de saída dentro da pasta de evidências |
+| 3 | configuração inválida, inclusive arquivo de configuração ausente ou ilegível |
 | 4 | Docker ausente ou parado (detectado pelo `verify.sh` antes de rodar) |
 
 Uma linha que não dá para interpretar não interrompe a execução: ela vai para `relatorio.json` em `nao_interpretado` com arquivo e linha. Nenhuma exceção é engolida: um erro inesperado sai com código 2 e a mensagem.
@@ -318,7 +319,7 @@ Uma linha que não dá para interpretar não interrompe a execução: ela vai pa
 
 - O processo roda em contêiner com `--network none`, montagens só leitura e usuário não root.
 - Não há telemetria.
-- O relatório cita trechos de evidência cortados em 200 caracteres e já sem credenciais. O PRIVACY.md avisa que esses trechos podem conter outros dados dos logs (IPs, IDs).
+- O relatório cita trechos de evidência cortados em 200 caracteres e já sem credenciais: cada achado E1 traz o registro de evidência mais próximo no tempo (`arquivo:linha: trecho`). O PRIVACY.md avisa que esses trechos podem conter outros dados dos logs (IPs, IDs).
 - SECURITY.md traz a versão suportada e o canal de reporte.
 
 ## 15. Testes
