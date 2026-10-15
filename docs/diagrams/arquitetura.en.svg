@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="620" viewBox="0 0 1080 620" font-family="sans-serif" font-size="16">
+<defs>
+<marker id="seta" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="userSpaceOnUse"><polygon points="0,0 10,4 0,8" fill="#1e1e1e"/></marker>
+</defs>
+<rect width="1080" height="620" fill="#ffffff"/>
+<rect x="40" y="60" width="200" height="80" rx="12" ry="12" fill="#ffffff" stroke="#1e1e1e" stroke-width="2"/>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="140.0" y="95.0">postmortem.md, evidence</tspan><tspan x="140.0" y="115.0">and TOML</tspan></text>
+<rect x="300" y="60" width="200" height="80" rx="12" ry="12" fill="#e9ecef" stroke="#1e1e1e" stroke-width="2"/>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="400.0" y="85.0">verify.sh: no-network</tspan><tspan x="400.0" y="105.0">container, read-only</tspan><tspan x="400.0" y="125.0">inputs</tspan></text>
+<rect x="560" y="60" width="200" height="80" rx="12" ry="12" fill="#ffc9c9" stroke="#1e1e1e" stroke-width="2"/>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="660.0" y="95.0">redact: hides</tspan><tspan x="660.0" y="115.0">credentials</tspan></text>
+<rect x="820" y="60" width="200" height="80" rx="12" ry="12" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="920.0" y="95.0">parse_doc, evidence and</tspan><tspan x="920.0" y="115.0">timestamps: all in UTC</tspan></text>
+<rect x="820" y="260" width="200" height="80" rx="12" ry="12" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="920.0" y="295.0">rules E, M, T, A, O, L</tspan><tspan x="920.0" y="315.0">with cited source</tspan></text>
+<rect x="560" y="260" width="200" height="80" rx="12" ry="12" fill="#b2f2bb" stroke="#1e1e1e" stroke-width="2"/>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="660.0" y="295.0">relatorio.json and</tspan><tspan x="660.0" y="315.0">relatorio.md</tspan></text>
+<rect x="820" y="460" width="200" height="80" rx="12" ry="12" fill="#b2f2bb" stroke="#1e1e1e" stroke-width="2"/>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="920.0" y="495.0">diagrama.excalidraw:</tspan><tspan x="920.0" y="515.0">where and why</tspan></text>
+<rect x="300" y="260" width="200" height="80" rx="12" ry="12" fill="#ffec99" stroke="#1e1e1e" stroke-width="2"/>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="400.0" y="285.0">SKILL.md: script-checked</tspan><tspan x="400.0" y="305.0">and model opinion, kept</tspan><tspan x="400.0" y="325.0">apart</tspan></text>
+<line x1="240" y1="100.0" x2="300" y2="100.0" stroke="#1e1e1e" stroke-width="2" marker-end="url(#seta)"/>
+<line x1="500" y1="100.0" x2="560" y2="100.0" stroke="#1e1e1e" stroke-width="2" marker-end="url(#seta)"/>
+<line x1="760" y1="100.0" x2="820" y2="100.0" stroke="#1e1e1e" stroke-width="2" marker-end="url(#seta)"/>
+<line x1="920.0" y1="140" x2="920.0" y2="260" stroke="#1e1e1e" stroke-width="2" marker-end="url(#seta)"/>
+<line x1="820" y1="300.0" x2="760" y2="300.0" stroke="#1e1e1e" stroke-width="2" marker-end="url(#seta)"/>
+<line x1="920.0" y1="340" x2="920.0" y2="460" stroke="#1e1e1e" stroke-width="2" marker-end="url(#seta)"/>
+<line x1="560" y1="300.0" x2="500" y2="300.0" stroke="#1e1e1e" stroke-width="2" marker-end="url(#seta)"/>
+</svg>

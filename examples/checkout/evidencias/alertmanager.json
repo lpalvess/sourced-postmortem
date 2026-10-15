@@ -1,0 +1,1 @@
+{"alerts":[{"labels":{"alertname":"CheckoutErrorRate"},"startsAt":"2026-09-14T15:01:30Z","endsAt":"2026-09-14T16:00:10Z","status":"resolved"}]}

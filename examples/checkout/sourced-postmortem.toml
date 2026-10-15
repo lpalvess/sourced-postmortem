@@ -1,0 +1,7 @@
+[times.pagamentos]
+componentes = ["checkout-api"]
+membros = ["ana.souza", "@joao"]
+
+[times.plataforma]
+componentes = ["ingress"]
+membros = ["@maria"]
