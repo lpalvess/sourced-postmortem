@@ -166,6 +166,21 @@ class CliTest(unittest.TestCase):
         self.assertNotIn(valor, err)
         self.assertIn("RuntimeError", err)
 
+    def test_e1_evidencia_no_relatorio_sem_segredo(self):
+        valor = "SEGREDO" + "RP"
+        doc, ev, cfg, out = self.case(
+            replace={"- 15:05 [reconhecimento]": "- 15:12 [reconhecimento]"},
+            evidence_extra={"perto.log": "2026-09-14T15:09:30Z token=" + valor + " ack\n"})
+        code, _, _ = run(args(doc, ev, cfg, out))
+        self.assertEqual(code, 1)
+        rep = json.loads((out / "relatorio.json").read_text(encoding="utf-8"))
+        e1 = next(a for a in rep["achados"] if a["id"] == "E1")
+        self.assertTrue(e1["evidencia"].startswith("perto.log:1: "))
+        md = (out / "relatorio.md").read_text(encoding="utf-8")
+        self.assertIn("evidência: perto.log:1:", md)
+        for n in ("relatorio.json", "relatorio.md", "diagrama.excalidraw"):
+            self.assertNotIn(valor, (out / n).read_text(encoding="utf-8"), n)
+
     def test_markdown_sem_travessao_nem_seta(self):
         doc, ev, cfg, out = self.case(replace={"3 clientes": "5 clientes"})
         run(args(doc, ev, cfg, out))

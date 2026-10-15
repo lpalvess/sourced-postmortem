@@ -26,6 +26,23 @@ class EvidenciasTests(unittest.TestCase):
         self.assertEqual(f.nivel, "reprova")
         self.assertEqual(f.fonte, ("P4",))
 
+    def test_e1_evidencia_traz_registro_mais_proximo(self):
+        valor = "SEGREDO" + "E1"
+        linha = "2026-09-14T15:09:30Z token=" + valor + " " + "x" * 400
+        found, _ = check_case(replace={ACK: "- 15:12 [reconhecimento]"},
+                              evidence_extra={"perto.log": linha + "\n"})
+        f = next(f for f in found if f.id == "E1")
+        self.assertIsNotNone(f.evidencia)
+        self.assertTrue(f.evidencia.startswith("perto.log:1: 2026-09-14T15:09:30Z"))
+        self.assertNotIn(valor, f.evidencia)
+        self.assertIn("[OCULTO:senha-chave]", f.evidencia)
+        prefixo = "perto.log:1: "
+        self.assertLessEqual(len(f.evidencia) - len(prefixo), 200)
+
+    def test_e2_sem_evidencia_campo_vazio(self):
+        found, _ = check_case(replace={"1.240 pedidos": "9.999 pedidos"})
+        self.assertIsNone(next(f for f in found if f.id == "E2").evidencia)
+
     def test_e1_evidencia_local_com_offset(self):
         found, _ = check_case(
             replace={ACK: "- 15:09 [reconhecimento]"},
@@ -33,12 +50,12 @@ class EvidenciasTests(unittest.TestCase):
         self.assertNotIn("E1", ids(found))
 
     def test_e1_desligada(self):
-        found, _ = check_case(replace={ACK: "- 15:07 [reconhecimento]"},
+        found, _ = check_case(replace={ACK: "- 15:12 [reconhecimento]"},
                               config_text=FIXTURE_TOML + '\n[niveis]\nE1 = "desligada"\n')
         self.assertNotIn("E1", ids(found))
 
     def test_e1_nivel_aviso(self):
-        found, _ = check_case(replace={ACK: "- 15:07 [reconhecimento]"},
+        found, _ = check_case(replace={ACK: "- 15:12 [reconhecimento]"},
                               config_text=FIXTURE_TOML + '\n[niveis]\nE1 = "aviso"\n')
         self.assertEqual(ids(found, "aviso"), ["E1"])
 

@@ -11,9 +11,22 @@ def _fmt(dt) -> str:
     return dt.astimezone(UTC).strftime("%Y-%m-%d %H:%M:%S")
 
 
+def _mais_proxima(pontos, quando, alvo) -> str | None:
+    """Trecho (já sem credenciais) do registro com horário mais perto de alvo."""
+    if not pontos:
+        return None
+    i = bisect_left(quando, alvo)
+    candidatos = pontos[max(0, i - 1):i + 1]
+    _, r = min(candidatos, key=lambda p: abs(p[0] - alvo))
+    return f"{r.file}:{r.line}: {r.excerpt}"
+
+
 def check(ctx: Context):
     out = []
     stamps = sorted(s.when for r in ctx.ev.records for s in r.stamps)
+    pontos = sorted(((s.when, r) for r in ctx.ev.records for s in r.stamps),
+                    key=lambda p: p[0])
+    quando = [p[0] for p in pontos]
     tol = timedelta(seconds=ctx.cfg.tolerancia_segundos)
     for e in ctx.doc.timeline:
         if e.stamp is None:
@@ -28,7 +41,7 @@ def check(ctx: Context):
             "E1", f"timeline, linha {e.line}",
             f"nenhuma evidência perto de {_fmt(e.stamp.when)} UTC "
             f"(janela {_fmt(start)} a {_fmt(end)} UTC, fim exclusivo)",
-            linha=e.line))
+            linha=e.line, evidencia=_mais_proxima(pontos, quando, e.stamp.when)))
     ev_numbers = ctx.ev.numbers
     for q in ctx.doc.quantities:
         if q.forms & ev_numbers:
