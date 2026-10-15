@@ -11,18 +11,24 @@
 # 4 Docker indisponível ou contêiner que não pôde ser iniciado.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 # Fixada por digest para a imagem base não mudar por baixo de você. Troque com SOURCED_POSTMORTEM_IMAGE.
 IMAGE="${SOURCED_POSTMORTEM_IMAGE:-python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1}"
 
 die() { echo "erro: $*" >&2; exit 2; }
 
+# Recusa caminhos que quebrariam o --mount (o Docker separa o valor por vírgulas).
+no_comma() {
+  case "$1" in *,* | *$'\n'*) die "o caminho contém vírgula ou quebra de linha: $1" ;; esac
+}
+no_comma "$ROOT"
+
 # Caminho absoluto de um arquivo ou pasta existente. Recusa caracteres que quebrariam o --mount.
 abspath() {
   local p="$1"
-  case "$p" in *,* | *$'\n'*) die "o caminho contém vírgula ou quebra de linha: $p" ;; esac
+  no_comma "$p"
   [ -e "$p" ] || die "não foi possível ler $p: não encontrado"
-  if [ -d "$p" ]; then (cd "$p" && pwd); else echo "$(cd "$(dirname "$p")" && pwd)/$(basename "$p")"; fi
+  if [ -d "$p" ]; then (cd "$p" && pwd -P); else echo "$(cd "$(dirname "$p")" && pwd -P)/$(basename "$p")"; fi
 }
 
 bind() { echo "type=bind,src=$1,dst=$2$3"; }
@@ -106,7 +112,12 @@ fi
 [ "$out_set" -eq 1 ] || out="sourced-postmortem-out"
 case "$out" in *,* | *$'\n'*) die "o caminho contém vírgula ou quebra de linha: $out" ;; esac
 mkdir -p "$out"
-out_abs="$(cd "$out" && pwd)"
+out_abs="$(cd "$out" && pwd -P)"
+# Os caminhos já resolvidos (cwd e links simbólicos incluídos) também não podem ter vírgula.
+no_comma "$doc_abs"
+no_comma "$ev_abs"
+no_comma "$out_abs"
+[ -z "${cfg_abs:-}" ] || no_comma "$cfg_abs"
 # A saída dentro das evidências viraria evidência na próxima execução.
 case "$out_abs/" in
   "$ev_abs"/*) die "a pasta de saída não pode ficar dentro da pasta de evidências: $out_abs" ;;

@@ -99,6 +99,32 @@ class SemDockerTest(Base):
             env={**os.environ, "PATH": str(self.bin)})
         self.assertEqual(r.returncode, 2, r.stderr)
 
+    def test_virgula_no_cwd_com_argumentos_relativos_sai_2(self):
+        cwd = self.tmp / "a,b"
+        cwd.mkdir()
+        shutil.copy(self.doc, cwd / "d.md")
+        (cwd / "ev").mkdir()
+        r = subprocess.run([BASH, str(SCRIPT), "d.md", "ev", "--out", "o"],
+                           capture_output=True, text=True, cwd=cwd, timeout=60,
+                           env={**os.environ, "PATH": str(self.bin)})
+        self.assertEqual(r.returncode, 2, r.stderr)
+        self.assertNotIn("Docker", r.stderr)
+
+    def test_saida_symlink_para_dentro_das_evidencias_sai_2(self):
+        (self.ev / "sub").mkdir()
+        link = self.tmp / "link-saida"
+        link.symlink_to(self.ev / "sub")
+        r = self.run_script([str(self.doc), str(self.ev), "--out", str(link)], self.bin)
+        self.assertEqual(r.returncode, 2, r.stderr)
+        self.assertNotIn("Docker", r.stderr)
+
+    def test_evidencias_symlink_com_saida_dentro_sai_2(self):
+        link = self.tmp / "link-ev"
+        link.symlink_to(self.ev)
+        r = self.run_script([str(self.doc), str(link), "--out", str(self.ev / "saida")], self.bin)
+        self.assertEqual(r.returncode, 2, r.stderr)
+        self.assertNotIn("Docker", r.stderr)
+
     def test_argumentos_validos_sem_docker_sai_4(self):
         out = self.tmp / "saida"
         r = self.run_script([str(self.doc), str(self.ev), "--config", str(self.cfg),
