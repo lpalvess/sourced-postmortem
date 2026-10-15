@@ -33,6 +33,25 @@ class ExcalidrawTests(unittest.TestCase):
             if e["type"] == "text":
                 self.assertEqual(e["fontFamily"], 5)
 
+    def test_rotulo_cabe_na_caixa(self):
+        # Excalifont 16 px mede cerca de 8,5 px por caractere (conferido no
+        # excalidraw.com): cada linha precisa caber na largura útil da caixa.
+        els = build(replace={ACK: "- 15:07 [reconhecimento]"})[0]["elements"]
+        boxes = by_id(els)
+        for e in els:
+            if e["type"] == "text" and e["containerId"]:
+                box = boxes[e["containerId"]]
+                for line in e["text"].split("\n"):
+                    self.assertLessEqual(len(line), ex.WRAP, line)
+                self.assertLessEqual(ex.WRAP * ex.CHAR_W, box["width"] - 20)
+
+    def test_texto_solto_nao_e_cortado(self):
+        for e in build()[0]["elements"]:
+            if e["type"] == "text" and not e["containerId"]:
+                longest = max(len(t) for t in e["text"].split("\n"))
+                need = longest * ex.CHAR_W * e["fontSize"] / 16
+                self.assertGreaterEqual(e["width"], need, e["text"])
+
     def test_cena_e_ids(self):
         sc = build()[0]
         self.assertEqual(sc["type"], "excalidraw")
@@ -113,6 +132,13 @@ class ExcalidrawTests(unittest.TestCase):
         self.assertEqual(ex.anchors(right, a), ((400, 40), (200, 40)))
         self.assertEqual(ex.anchors(a, below), ((100, 80), (100, 300)))
         self.assertEqual(ex.anchors(below, a), ((100, 300), (100, 80)))
+
+    def test_anchors_mesma_linha_com_alturas_diferentes(self):
+        # Caixas na mesma linha com alturas diferentes (o texto quebrou em mais
+        # linhas) continuam ligadas pelos lados, sem seta diagonal.
+        short = ex.rect("s", 560, 260, 200, 80, fill="#ffffff")
+        tall = ex.rect("t", 300, 260, 200, 100, fill="#ffffff")
+        self.assertEqual(ex.anchors(short, tall), ((560, 300), (500, 310)))
 
     def test_golden(self):
         out = ex.dumps(build()[0])

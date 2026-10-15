@@ -4,21 +4,21 @@
 </defs>
 <rect width="1080" height="620" fill="#ffffff"/>
 <rect x="40" y="60" width="200" height="80" rx="12" ry="12" fill="#ffffff" stroke="#1e1e1e" stroke-width="2"/>
-<text text-anchor="middle" fill="#1e1e1e"><tspan x="140.0" y="95.0">postmortem.md, evidence</tspan><tspan x="140.0" y="115.0">and TOML</tspan></text>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="140.0" y="95.0">postmortem.md,</tspan><tspan x="140.0" y="115.0">evidence and TOML</tspan></text>
 <rect x="300" y="60" width="200" height="80" rx="12" ry="12" fill="#e9ecef" stroke="#1e1e1e" stroke-width="2"/>
-<text text-anchor="middle" fill="#1e1e1e"><tspan x="400.0" y="85.0">verify.sh: no-network</tspan><tspan x="400.0" y="105.0">container, read-only</tspan><tspan x="400.0" y="125.0">inputs</tspan></text>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="400.0" y="85.0">verify.sh: no-</tspan><tspan x="400.0" y="105.0">network container,</tspan><tspan x="400.0" y="125.0">read-only inputs</tspan></text>
 <rect x="560" y="60" width="200" height="80" rx="12" ry="12" fill="#ffc9c9" stroke="#1e1e1e" stroke-width="2"/>
 <text text-anchor="middle" fill="#1e1e1e"><tspan x="660.0" y="95.0">redact: hides</tspan><tspan x="660.0" y="115.0">credentials</tspan></text>
 <rect x="820" y="60" width="200" height="80" rx="12" ry="12" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
-<text text-anchor="middle" fill="#1e1e1e"><tspan x="920.0" y="95.0">parse_doc, evidence and</tspan><tspan x="920.0" y="115.0">timestamps: all in UTC</tspan></text>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="920.0" y="85.0">parse_doc, evidence</tspan><tspan x="920.0" y="105.0">and timestamps: all</tspan><tspan x="920.0" y="125.0">in UTC</tspan></text>
 <rect x="820" y="260" width="200" height="80" rx="12" ry="12" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
-<text text-anchor="middle" fill="#1e1e1e"><tspan x="920.0" y="295.0">rules E, M, T, A, O, L</tspan><tspan x="920.0" y="315.0">with cited source</tspan></text>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="920.0" y="295.0">rules E, M, T, A, O,</tspan><tspan x="920.0" y="315.0">L with cited source</tspan></text>
 <rect x="560" y="260" width="200" height="80" rx="12" ry="12" fill="#b2f2bb" stroke="#1e1e1e" stroke-width="2"/>
 <text text-anchor="middle" fill="#1e1e1e"><tspan x="660.0" y="295.0">relatorio.json and</tspan><tspan x="660.0" y="315.0">relatorio.md</tspan></text>
 <rect x="820" y="460" width="200" height="80" rx="12" ry="12" fill="#b2f2bb" stroke="#1e1e1e" stroke-width="2"/>
 <text text-anchor="middle" fill="#1e1e1e"><tspan x="920.0" y="495.0">diagrama.excalidraw:</tspan><tspan x="920.0" y="515.0">where and why</tspan></text>
 <rect x="300" y="260" width="200" height="80" rx="12" ry="12" fill="#ffec99" stroke="#1e1e1e" stroke-width="2"/>
-<text text-anchor="middle" fill="#1e1e1e"><tspan x="400.0" y="285.0">SKILL.md: script-checked</tspan><tspan x="400.0" y="305.0">and model opinion, kept</tspan><tspan x="400.0" y="325.0">apart</tspan></text>
+<text text-anchor="middle" fill="#1e1e1e"><tspan x="400.0" y="285.0">SKILL.md: script-</tspan><tspan x="400.0" y="305.0">checked and model</tspan><tspan x="400.0" y="325.0">opinion, kept apart</tspan></text>
 <line x1="240" y1="100.0" x2="300" y2="100.0" stroke="#1e1e1e" stroke-width="2" marker-end="url(#seta)"/>
 <line x1="500" y1="100.0" x2="560" y2="100.0" stroke="#1e1e1e" stroke-width="2" marker-end="url(#seta)"/>
 <line x1="760" y1="100.0" x2="820" y2="100.0" stroke="#1e1e1e" stroke-width="2" marker-end="url(#seta)"/>

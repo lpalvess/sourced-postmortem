@@ -206,7 +206,7 @@ O que o projeto NÃO garante:
 - Timeline que passa da meia-noite exige um subtítulo de data dentro dela (`### 2026-09-15`). Sem ele, a entrada depois da virada parece fora de ordem (T2).
 - Nomes de pessoas só são detectados pela lista de membros do mapa de times. Sem mapa, a regra L2 só pega @handles.
 - Só entra Markdown como postmortem. Não há suporte a .docx nem PDF.
-- O desenho do diagrama foi gerado pelo script e não foi conferido visualmente no excalidraw.com por quem gerou. A conferência visual fica com o autor.
+- O diagrama foi conferido no excalidraw.com com o caso aprovado, um caso com E1 e os diagramas de arquitetura. A largura do texto é estimada (cerca de 20 caracteres por linha em caixas de 200 px), então um rótulo com palavras muito longas pode encostar na borda.
 
 ## O que este projeto não faz
 

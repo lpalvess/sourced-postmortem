@@ -33,6 +33,8 @@ LEAD = re.compile(
     r"(?:Z|UTC|GMT|[+-]\d{2}:?\d{2})?[\s|\-:]*", re.I)
 
 BOX_W = 200
+WRAP = 20      # caracteres por linha que cabem em BOX_W - 20 com Excalifont 16 px
+CHAR_W = 9     # largura aproximada de um caractere Excalifont 16 px, com folga
 LANE_H = 150
 LANE_X = 20
 
@@ -103,7 +105,7 @@ def text(key, x, y, w, content, *, container=None, size=16, align="center") -> d
 def _wrap(content: str) -> list[str]:
     out: list[str] = []
     for part in content.split("\n"):
-        out.extend(textwrap.wrap(part, 24) or [""])
+        out.extend(textwrap.wrap(part, WRAP) or [""])
     return out
 
 
@@ -120,7 +122,9 @@ def labeled_box(key, x, y, content, *, fill, dashed=False, width=BOX_W):
 def anchors(src, dst):
     sx, sy = src["x"], src["y"] + src["height"] / 2
     dx, dy = dst["x"], dst["y"] + dst["height"] / 2
-    if abs(sy - dy) < 1:
+    same_row = (src["y"] < dst["y"] + dst["height"]
+                and dst["y"] < src["y"] + src["height"])
+    if same_row:
         if dx >= sx:
             return ((src["x"] + src["width"], sy), (dst["x"], dy))
         return ((src["x"], sy), (dst["x"] + dst["width"], dy))
@@ -186,7 +190,8 @@ def _lane(key, y, width, name, height=LANE_H):
     lane["strokeColor"] = LANE_STROKE
     lane["strokeWidth"] = 1
     lane["fillStyle"] = "solid"
-    label = text("lane-name:" + key, LANE_X + 10, y + 8, 160, name, align="left")
+    label = text("lane-name:" + key, LANE_X + 10, y + 8,
+                 max(160, len(name) * CHAR_W), name, align="left")
     return lane, label
 
 
@@ -234,7 +239,8 @@ def build_diagram(doc: Document, cfg: Config, findings: list[Finding]) -> dict:
     factors_right = 180 + max(n - 1, 0) * 280 + 240 if n else 0
     width = max(timeline_right, factors_right) + 20 - LANE_X
 
-    elements = [text("title", 40, 20, 600, TITLE, size=24, align="left")]
+    elements = [text("title", 40, 20, max(600, len(TITLE) * CHAR_W * 24 / 16),
+                     TITLE, size=24, align="left")]
     for c in comps:
         lane, name = _lane(c, lane_y[c], width, c)
         elements += [lane, name]

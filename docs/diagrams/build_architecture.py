@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from verifier.excalidraw import anchors, arrow, dumps, labeled_box, scene  # noqa: E402
+from verifier.excalidraw import WRAP, anchors, arrow, dumps, labeled_box, scene  # noqa: E402
 
 OUT = Path(__file__).resolve().parent
 WIDTH, HEIGHT = 1080, 620
@@ -83,7 +83,7 @@ def build(lang: str) -> tuple[str, str]:
         parts.append(
             f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="12" ry="12" '
             f'fill="{FILL[key]}" stroke="#1e1e1e" stroke-width="2"/>')
-        lines = textwrap.wrap(node[idx], 24)
+        lines = textwrap.wrap(node[idx], WRAP)
         top = y + (h - len(lines) * LINE_H) / 2 + 15
         tspans = "".join(
             f'<tspan x="{x + w / 2}" y="{top + i * LINE_H}">{esc(t)}</tspan>'
