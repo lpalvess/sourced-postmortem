@@ -4,10 +4,10 @@ import dataclasses
 from verifier.metrics import compute, milestones
 from verifier.model import Document, Evidence, Finding
 from verifier.config import Config
-from verifier.rules import evidencias, metricas
+from verifier.rules import evidencias, metricas, timeline
 from verifier.rules._base import Context
 
-RULE_MODULES = (evidencias, metricas)
+RULE_MODULES = (evidencias, metricas, timeline)
 
 
 def build_context(doc: Document, ev: Evidence, cfg: Config) -> Context:
