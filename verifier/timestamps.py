@@ -77,10 +77,16 @@ def _day_month(a: int, b: int, order: str | None) -> tuple[int, int] | None:
     return None
 
 
-def _offset(text: str) -> tzinfo:
+_BAD_TZ = object()
+
+
+def _offset(text: str):
     sign = -1 if text[0] == "-" else 1
     digits = text[1:].replace(":", "")
-    return timezone(sign * timedelta(hours=int(digits[:2]), minutes=int(digits[2:])))
+    try:
+        return timezone(sign * timedelta(hours=int(digits[:2]), minutes=int(digits[2:])))
+    except ValueError:
+        return _BAD_TZ
 
 
 def _explicit_tz(m: re.Match) -> tzinfo | None:
@@ -94,6 +100,8 @@ def _explicit_tz(m: re.Match) -> tzinfo | None:
 
 def _build(m: re.Match, day: date | None, hour: int, minute: int, second: int | None,
            tz: tzinfo | None, default_tz: tzinfo, precision_seconds: bool) -> Hit:
+    if tz is _BAD_TZ:
+        return Hit(m.start(), m.end(), None, reason="data inválida")
     assumed = tz is None
     try:
         naive = datetime(day.year, day.month, day.day, hour, minute, second or 0)

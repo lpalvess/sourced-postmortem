@@ -78,6 +78,16 @@ class FindStampsTest(unittest.TestCase):
     def test_invalid_time(self):
         self.assertEqual(ts.find_stamps("25:99"), [])
 
+    def test_out_of_range_offset_does_not_raise(self):
+        for text in ("2026-09-14T10:00+2500", "12:00 -5000", "x 10:00 +2400",
+                     "10:00 -2500"):
+            hits = ts.find_stamps(text, default_date=date(2026, 9, 14))
+            self.assertEqual(len(hits), 1, text)
+            self.assertIsNone(hits[0].stamp)
+            self.assertEqual(hits[0].reason, "data inválida")
+            masked = ts.mask_temporal(text)
+            self.assertNotIn(":", masked)
+
     def test_sorted(self):
         hits = ts.find_stamps("14:00 e 2026-09-14T10:00Z", default_date=date(2026, 9, 14))
         self.assertEqual([h.start for h in hits], sorted(h.start for h in hits))
