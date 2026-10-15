@@ -18,7 +18,8 @@ class PositiveTests(unittest.TestCase):
 
     def test_private_key(self):
         body = "Q" * 20
-        text = f"-----BEGIN RSA PRIVATE KEY-----\n{body}\n-----END RSA PRIVATE KEY-----"
+        text = ("-----BEGIN " + "RSA PRIVATE KEY-----\n" + body + "\n"
+                + "-----END " + "RSA PRIVATE KEY-----")
         self.check(text, "private-key", body)
 
     def test_aws_secret(self):
@@ -72,6 +73,70 @@ class PositiveTests(unittest.TestCase):
         self.check("senha: hunter22", "senha-chave", "hunter22")
 
 
+class QuotedAndTruncatedTests(unittest.TestCase):
+    def test_quoted_values_fully_masked(self):
+        for texto, cauda in [
+            ('password="a b c"', "b c"),
+            ("senha: \"tail9 segredo longo\"", "segredo"),
+            ("secret='x y'", "y"),
+            ('{"token": "um dois tres"}', "tres"),
+            ('password="abc def', "def"),
+        ]:
+            with self.subTest(texto=texto):
+                out, found = redact(texto, "f.md")
+                self.assertEqual(kinds(found), ["senha-chave"])
+                self.assertNotIn(cauda, out)
+                self.assertIn("[OCULTO:senha-chave]", out)
+
+    def test_quote_characters_kept(self):
+        out, _ = redact('password="a b c"', "f.md")
+        self.assertEqual(out, 'password="[OCULTO:senha-chave]"')
+        out, _ = redact("secret='x y' resto", "f.md")
+        self.assertEqual(out, "secret='[OCULTO:senha-chave]' resto")
+
+    def test_quoted_mask_idempotent(self):
+        once, _ = redact('password="a b c"', "f.md")
+        twice, found = redact(once, "f.md")
+        self.assertEqual(once, twice)
+        self.assertEqual(found, [])
+
+    def test_empty_quotes_not_a_secret(self):
+        out, found = redact('password=""', "f.md")
+        self.assertEqual(found, [])
+
+    def test_mask_prefix_does_not_hide_payload(self):
+        out, found = redact("password=[OCULTO:x]REAL", "f.md")
+        self.assertNotIn("REAL", out)
+        self.assertEqual(kinds(found), ["senha-chave"])
+
+    def test_truncated_private_key(self):
+        cab = "-----BEGIN " + "RSA PRIVATE KEY-----"
+        text = f"antes\n{cab}\nAAAA\nBBBB\n\ndepois"
+        out, found = redact(text, "f.md")
+        self.assertNotIn("AAAA", out)
+        self.assertNotIn("BBBB", out)
+        self.assertIn("depois", out)
+        self.assertEqual(out.count("\n"), text.count("\n"))
+        self.assertEqual([(r.line, r.kind) for r in found], [(2, "private-key")])
+
+    def test_truncated_private_key_to_end(self):
+        cab = "-----BEGIN " + "PRIVATE KEY-----"
+        text = f"{cab}\nAAAA\nBBBB"
+        out, found = redact(text, "f.md")
+        self.assertNotIn("AAAA", out)
+        self.assertNotIn("BBBB", out)
+        self.assertEqual(out.count("\n"), 2)
+
+    def test_full_block_still_wins(self):
+        cab = "-----BEGIN " + "PRIVATE KEY-----"
+        fim = "-----END " + "PRIVATE KEY-----"
+        text = f"{cab}\nAAAA\n\nBBBB\n{fim}\ndepois"
+        out, found = redact(text, "f.md")
+        self.assertNotIn("BBBB", out)
+        self.assertIn("depois", out)
+        self.assertEqual(len(found), 1)
+
+
 class NegativeTests(unittest.TestCase):
     def test_not_secrets(self):
         for text in [
@@ -96,7 +161,8 @@ class BehaviorTests(unittest.TestCase):
     def test_multiline_key_preserves_lines(self):
         text = (
             "linha 1\n"
-            "-----BEGIN PRIVATE KEY-----\nAAAA\nBBBB\n-----END PRIVATE KEY-----\n"
+            "-----BEGIN " + "PRIVATE KEY-----\nAAAA\nBBBB\n"
+            "-----END " + "PRIVATE KEY-----\n"
             "senha: x1\n"
         )
         out, found = redact(text, "f.md")

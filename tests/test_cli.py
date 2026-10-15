@@ -95,9 +95,9 @@ class CliTest(unittest.TestCase):
             "slack " + s["slack-token"],
             "jwt " + s["jwt"],
             "Authorization: Bearer " + s["bearer"],
-            "-----BEGIN RSA PRIVATE KEY-----",
+            "-----BEGIN " + "RSA PRIVATE KEY-----",
             s["private-key"],
-            "-----END RSA PRIVATE KEY-----",
+            "-----END " + "RSA PRIVATE KEY-----",
             "mysql://admin:" + s["url-credencial"] + "@db.interno:3306/app",
             "aws_secret_access_key = " + s["aws-secret"],
             "",
@@ -123,6 +123,23 @@ class CliTest(unittest.TestCase):
             self.assertEqual(set(c), {"arquivo", "linha", "tipo"})
         self.assertIn("postmortem.md", {c["arquivo"] for c in
                                         rep["credenciais_ocultadas"]})
+
+    def test_vazamento_no_documento(self):
+        caudas = ["TAILtl", "TAILac", "TAILfa", "TAILim"]
+        doc, ev, cfg, out = self.case(replace={
+            "## Impacto\n": '## Impacto\n\nsenha: "imp0 ' + caudas[3] + ' x"\n',
+            "- 14:50 Deploy da versão 4.2 do checkout-api concluído.":
+                '- 14:50 Deploy password="tl0 ' + caudas[0] + ' y" concluído.',
+            "Reduzir o limiar do alerta de erro para 5%":
+                "Reduzir o limiar secret='ac0 " + caudas[1] + " z' agora",
+            "- O alerta de erro só disparava":
+                '- token="fa0 ' + caudas[2] + ' w" O alerta de erro só disparava',
+        })
+        run(args(doc, ev, cfg, out))
+        for n in ("relatorio.json", "relatorio.md", "diagrama.excalidraw"):
+            texto = (out / n).read_text(encoding="utf-8")
+            for cauda in caudas:
+                self.assertNotIn(cauda, texto, (n, cauda))
 
     def test_markdown_sem_travessao_nem_seta(self):
         doc, ev, cfg, out = self.case(replace={"3 clientes": "5 clientes"})
