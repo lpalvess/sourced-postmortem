@@ -105,18 +105,18 @@ def _num(s: str) -> float:
 
 
 def extract_durations(text: str, *, labeled_only: bool = False) -> list[tuple[str, float, str | None]]:
-    taken: list[tuple[int, int]] = []
+    taken = bytearray(len(text))
     found: list[tuple[int, str, float, str | None]] = []
 
     def free(s: int, e: int) -> bool:
-        return all(e <= a or s >= b for a, b in taken)
+        return taken.find(1, s, e) == -1
 
     for rx, kind in ((_HM, "hm"), (_MIN, "min"), (_HRS, "hrs")):
         for m in rx.finditer(text):
             s, e = m.span()
             if not free(s, e):
                 continue
-            taken.append((s, e))
+            taken[s:e] = b"\x01" * (e - s)
             label = _label_for(text, s)
             if kind == "hm":
                 if label is None:

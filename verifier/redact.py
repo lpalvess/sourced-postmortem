@@ -18,16 +18,16 @@ PADROES = [
         r"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+"), 0),
     ("bearer", re.compile(r"(?i)(\bbearer\s+)([A-Za-z0-9._~+/=-]{8,})"), 2),
     ("url-credencial", re.compile(
-        r"(\b[a-zA-Z][a-zA-Z0-9+.-]*://[^/\s:@]+:)([^@\s/]+)(?=@)"), 2),
+        r"((?<![A-Za-z0-9+.-])[a-zA-Z][a-zA-Z0-9+.-]{0,31}://[^/\s:@]+:)([^@\s/]+)(?=@)"), 2),
     ("senha-chave", re.compile(
-        r"(?i)(\b[\w-]*(?:password|passwd|senha|secret|token|api_key|apikey)"
+        r"(?i)(\b[\w-]{0,40}(?:password|passwd|senha|secret|token|api_key|apikey)"
         r"\b[\"']?\s*[=:]\s*)(\"[^\"\n]*\"?|'[^'\n]*'?|[^\s\"',;]+)"), 2),
 ]
 
 
 _MASCARA = re.compile(r"\[OCULTO:[a-z-]+\]")
-_CAB_CHAVE = re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")
-_FIM_CHAVE = re.compile(r"-----END [A-Z ]*PRIVATE KEY-----")
+_CAB_CHAVE = re.compile(r"-----BEGIN [A-Z ]{0,30}PRIVATE KEY-----")
+_FIM_CHAVE = re.compile(r"-----END [A-Z ]{0,30}PRIVATE KEY-----")
 _LINHA_VAZIA = re.compile(r"\n[ \t\r]*\n")
 
 

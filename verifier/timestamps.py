@@ -119,13 +119,13 @@ def _int(v: str | None) -> int | None:
 def find_stamps(text: str, *, default_date: date | None = None,
                 default_tz: tzinfo = UTC, date_order: str | None = None) -> list[Hit]:
     hits: list[Hit] = []
-    taken: list[tuple[int, int]] = []
+    taken = bytearray(len(text))
 
     def free(m: re.Match) -> bool:
-        return not any(m.start() < e and m.end() > s for s, e in taken)
+        return taken.find(1, m.start(), m.end()) == -1
 
     def add(m: re.Match, hit: Hit) -> None:
-        taken.append((m.start(), m.end()))
+        taken[m.start():m.end()] = b"\x01" * (m.end() - m.start())
         hits.append(hit)
 
     for m in _ISO.finditer(text):
