@@ -1,0 +1,15 @@
+{
+  "name": "sourced-postmortem",
+  "description": "The sourced-postmortem plugin for Claude Code",
+  "owner": {
+    "name": "Lucas Pinheiro Alves",
+    "url": "https://github.com/lpalvess"
+  },
+  "plugins": [
+    {
+      "name": "sourced-postmortem",
+      "source": "./",
+      "description": "Checks incident postmortems against the evidence: every time and number must exist in the logs, durations are recomputed, action items need owner, ticket, priority, type and due date. Offline."
+    }
+  ]
+}

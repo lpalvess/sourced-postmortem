@@ -1,0 +1,15 @@
+{
+  "name": "sourced-postmortem",
+  "description": "Checks incident postmortems against the evidence: every time and number must exist in the logs, durations are recomputed, action items need owner, ticket, priority, type and due date. Offline.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Lucas Pinheiro Alves",
+    "url": "https://github.com/lpalvess"
+  },
+  "homepage": "https://github.com/lpalvess/sourced-postmortem",
+  "repository": "https://github.com/lpalvess/sourced-postmortem",
+  "license": "MIT",
+  "skills": [
+    "."
+  ]
+}
