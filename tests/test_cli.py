@@ -141,6 +141,31 @@ class CliTest(unittest.TestCase):
             for cauda in caudas:
                 self.assertNotIn(cauda, texto, (n, cauda))
 
+    def test_nome_de_arquivo_com_segredo(self):
+        valor = "SEGREDO" + "FN"
+        nome = "leak_" + "password=" + valor + ".log"
+        doc, ev, cfg, out = self.case(evidence_extra={
+            nome: "2026-09-14T15:01:30Z evento\n",
+            "ruim.log": "2026-14-99T99:99:99Z lixo password=outro1\n"})
+        novo = doc.with_name("doc_" + "token=" + valor + ".md")
+        doc.rename(novo)
+        code, _, err = run(args(novo, ev, cfg, out))
+        self.assertIn(code, (0, 1))
+        self.assertNotIn(valor, err)
+        for n in ("relatorio.json", "relatorio.md", "diagrama.excalidraw"):
+            self.assertNotIn(valor, (out / n).read_text(encoding="utf-8"), n)
+
+    def test_traceback_inesperado_redigido(self):
+        from unittest import mock
+        valor = "SEGREDO" + "TB"
+        doc, ev, cfg, out = self.case()
+        with mock.patch("verifier.cli.build_report",
+                        side_effect=RuntimeError("falhou password=" + valor)):
+            code, _, err = run(args(doc, ev, cfg, out))
+        self.assertEqual(code, 2)
+        self.assertNotIn(valor, err)
+        self.assertIn("RuntimeError", err)
+
     def test_markdown_sem_travessao_nem_seta(self):
         doc, ev, cfg, out = self.case(replace={"3 clientes": "5 clientes"})
         run(args(doc, ev, cfg, out))

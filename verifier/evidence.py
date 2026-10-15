@@ -46,7 +46,7 @@ def load_evidence(folder: str | Path, cfg: Config, *, default_date: date | None,
     assumed: list[str] = []
 
     for p in files:
-        rel = p.relative_to(root).as_posix()
+        rel = redact(p.relative_to(root).as_posix(), "")[0]
         raw = p.read_text(encoding="utf-8-sig", errors="replace")
         text, found = redact(raw, rel)
         redactions.extend(found)

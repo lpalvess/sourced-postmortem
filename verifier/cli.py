@@ -9,6 +9,7 @@ from verifier.evidence import load_evidence
 from verifier.excalidraw import build_diagram
 from verifier.model import ConfigError, InputError
 from verifier.parse_doc import parse_document
+from verifier.redact import redact
 from verifier.report import build_report, write_outputs
 from verifier.rules import build_context, run_all
 
@@ -49,7 +50,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Erro ao ler ou gravar arquivo: {e}", file=sys.stderr)
         return 2
     except Exception:
-        traceback.print_exc()
+        print(redact(traceback.format_exc(), "")[0], end="", file=sys.stderr)
         return 2
     nivel = [f.nivel for f in findings]
     print(f"{report['resultado']}: {nivel.count('reprova')} reprovações, "

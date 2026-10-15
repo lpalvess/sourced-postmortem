@@ -119,7 +119,8 @@ def _parse_actions(sec: Section) -> list[Action]:
 def parse_document(path, cfg: Config) -> Document:
     p = Path(path)
     raw = p.read_text(encoding="utf-8-sig", errors="replace")
-    text, redactions = redact(raw.replace("\r\n", "\n").replace("\r", "\n"), p.name)
+    nome = redact(p.name, "")[0]
+    text, redactions = redact(raw.replace("\r\n", "\n").replace("\r", "\n"), nome)
     lines = [(i + 1, t) for i, t in enumerate(text.split("\n"))]
     if lines and lines[-1][1] == "":
         lines.pop()
@@ -128,7 +129,7 @@ def parse_document(path, cfg: Config) -> Document:
     tl = next((s for s in sections if s.key == "timeline"), None)
     if tl is None:
         aceitos = ", ".join(cfg.secoes["timeline"])
-        raise InputError(f"{p.name}: nenhuma seção de linha do tempo encontrada "
+        raise InputError(f"{nome}: nenhuma seção de linha do tempo encontrada "
                          f"(cabeçalhos aceitos: {aceitos})")
 
     tz = parse_tz_decl(tl.title)
@@ -193,7 +194,7 @@ def parse_document(path, cfg: Config) -> Document:
         if not _PREFIX_OK.match(content[:hit.start]):
             continue
         if hit.stamp is None:
-            (ambiguous if hit.ambiguous else unparsed).append(Unparsed(p.name, n, hit.reason))
+            (ambiguous if hit.ambiguous else unparsed).append(Unparsed(nome, n, hit.reason))
             continue
         tag = TAG.search(content)
         marker = None
@@ -254,6 +255,6 @@ def parse_document(path, cfg: Config) -> Document:
             durations.append(Duration(n, r, minutes, label))
     durations.sort(key=lambda d: d.line)
 
-    return Document(str(p), p.name, lines, sections, tz, inc_date, severity,
+    return Document(str(p), nome, lines, sections, tz, inc_date, severity,
                     timeline, actions, factors, quantities, durations,
                     redactions, unparsed, ambiguous)
