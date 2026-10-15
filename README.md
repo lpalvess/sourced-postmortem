@@ -127,7 +127,7 @@ Nível `reprova` faz o script sair com código 1. Nível `aviso` aparece no rela
 
 ### Configuração
 
-O `sourced-postmortem.toml` é opcional. Ele ajusta o perfil, os níveis, os marcos e o mapa de times. Chave desconhecida, nível inválido ou ID de regra inexistente dão código 3, com a linha do erro.
+O `sourced-postmortem.toml` é opcional. Ele ajusta o perfil, os níveis, os marcos e o mapa de times. Chave desconhecida, nível inválido ou ID de regra inexistente dão código 3. A mensagem traz o nome do arquivo e o nome da chave; só erro de sintaxe do TOML traz também linha e coluna.
 
 ```toml
 [perfil]
@@ -168,7 +168,7 @@ membros = ["@maria"]
 | Docker ausente ou parado | 4 | Instale o Docker e confira se ele está rodando (`docker info`). |
 | Seção de timeline não encontrada | 2 | Use um cabeçalho reconhecido (veja a tabela de seções), como "Linha do tempo" ou "Timeline", ou acrescente o seu no TOML. |
 | Evidências acima do limite | 2 | Reduza a pasta de evidências ou aumente `limite_evidencias_mb` no TOML. |
-| Config inválida | 3 | Leia a mensagem, que traz a linha do erro, e corrija a chave, o nível ou o ID de regra no TOML. |
+| Config inválida | 3 | Leia a mensagem, que traz o nome do arquivo e da chave (erro de sintaxe do TOML traz também linha e coluna), e corrija a chave, o nível ou o ID de regra no TOML. |
 | E1 num horário que existe no log | 1 | Veja "Linhas não interpretadas" em `relatorio.md`: provavelmente o formato do horário não é suportado ou o fuso da evidência difere do declarado. |
 | E2 num número de dashboard | 1 | Números que só aparecem em imagem ou captura de tela não são conferidos. Exporte a série em CSV e coloque na pasta de evidências. |
 | M1 | 1 | Faltam marcos. Use as tags `[inicio]`, `[deteccao]`, `[mitigacao]` e `[fim]` nas entradas da timeline. |

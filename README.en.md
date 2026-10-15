@@ -127,7 +127,7 @@ Level `reprova` (fail) makes the script exit with code 1. Level `aviso` (warning
 
 ### Configuration
 
-The `sourced-postmortem.toml` is optional. It adjusts the profile, the levels, the milestones and the team map. An unknown key, an invalid level or a nonexistent rule ID gives exit code 3, with the line of the error.
+The `sourced-postmortem.toml` is optional. It adjusts the profile, the levels, the milestones and the team map. An unknown key, an invalid level or a nonexistent rule ID gives exit code 3. The message carries the file name and the key name; only TOML syntax errors also carry line and column.
 
 ```toml
 [perfil]
@@ -168,7 +168,7 @@ membros = ["@maria"]
 | Docker missing or stopped | 4 | Install Docker and check that it is running (`docker info`). |
 | Timeline section not found | 2 | Use a recognized heading (see the sections table), such as "Linha do tempo" or "Timeline", or add yours in the TOML. |
 | Evidence above the limit | 2 | Shrink the evidence folder or raise `limite_evidencias_mb` in the TOML. |
-| Invalid config | 3 | Read the message, which has the line of the error, and fix the key, level or rule ID in the TOML. |
+| Invalid config | 3 | Read the message, which has the file name and the key name (a TOML syntax error also has line and column), and fix the key, level or rule ID in the TOML. |
 | E1 on a time that exists in the log | 1 | See "Linhas não interpretadas" (lines not interpreted) in `relatorio.md`: most likely the time format is not supported or the evidence's time zone differs from the declared one. |
 | E2 on a dashboard number | 1 | Numbers that only appear in an image or screenshot are not checked. Export the series as CSV and put it in the evidence folder. |
 | M1 | 1 | Milestones are missing. Use the tags `[inicio]`, `[deteccao]`, `[mitigacao]` and `[fim]` on the timeline entries. |
