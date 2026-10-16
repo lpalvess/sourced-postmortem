@@ -990,7 +990,7 @@ Layout de `build_diagram`:
 
 **Files:** Create `scripts/verify.sh` (executável), `tests/test_verify_sh.py`
 
-**Decisões fixas.** Siga a estrutura de `/home/info1/ai-dev/sourced-carousel/scripts/carousel.sh` (as funções `abspath` e `bind` e o array `SECURE`), com estas diferenças:
+**Decisões fixas.** Siga a estrutura de `scripts/carousel.sh` do projeto irmão sourced-carousel (as funções `abspath` e `bind` e o array `SECURE`), com estas diferenças:
 - `IMAGE="${SOURCED_POSTMORTEM_IMAGE:-python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1}"`
 - `SECURE` igual ao do carousel, mais `-e PYTHONDONTWRITEBYTECODE=1`.
 - Uso:
@@ -1042,7 +1042,7 @@ Layout de `build_diagram`:
 **Files:** Create `SKILL.md`, `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `docs/icon/make_icon.py`, `.claude-plugin/icon.png`
 
 **Decisões fixas.**
-- `plugin.json` e `marketplace.json`: o modelo da nota 07 do vault, igual ao do sourced-carousel.
+- `plugin.json` e `marketplace.json`: o mesmo modelo do sourced-carousel.
   - `"skills": ["."]`
   - `"source": "./"`
   - `version 1.0.0`
@@ -1121,7 +1121,7 @@ Layout de `build_diagram`:
 - Arestas: entrada e container, container e redact, redact e parse, parse e rules, rules e report, rules e diagram, report e skill.
 - O SVG é de 1080x620 com fundo branco: um `rect` arredondado por nó, o texto com `tspan` por linha (wrap 24, com escape de `& < >`) e `line` com `marker-end` de ponta triangular, usando `anchors`.
 
-`README.md` (PT) segue as 9 seções da nota 07 e o tom do README do sourced-carousel.
+`README.md` (PT) segue as 9 seções do modelo de publicação de plugins e o tom do README do sourced-carousel.
 1. **O que faz e por que existe.** Cita o problema relatado pela Zalando (https://engineering.zalando.com/posts/2025/09/dead-ends-or-data-goldmines-ai-powered-postmortem-analysis.html), deixa claro que o plugin não gera postmortem e lista as travas.
 2. **Arquitetura:** a imagem `docs/diagrams/arquitetura.pt.svg`, um parágrafo e os arquivos editáveis.
 3. **Instalação:**
@@ -1191,7 +1191,7 @@ Layout de `build_diagram`:
 - [ ] **Step 2:** `scripts/verify.sh test`, tudo passando (os testes com Docker são pulados dentro do contêiner).
 - [ ] **Step 3:** `scripts/verify.sh examples/checkout/postmortem.md examples/checkout/evidencias --config examples/checkout/sourced-postmortem.toml --out "$(mktemp -d)"`, com código 1 e as linhas "Relatório:" e "Diagrama:".
 - [ ] **Step 4:** `claude plugin validate . --strict`.
-- [ ] **Step 5:** os 3 pedidos do README, um por vez, com o comando da nota 01 do vault:
+- [ ] **Step 5:** os 3 pedidos do README, um por vez, com este comando:
 
   ```
   echo "<pedido>" | claude -p --plugin-dir "$PWD" --setting-sources project --strict-mcp-config --model sonnet --allowedTools "Skill,Read,Write,Bash($PWD/scripts/verify.sh:*)"

@@ -13,7 +13,7 @@ Princípio: o Claude escreve e opina, o código confere. Tudo o que pode ser che
 - Um postmortem com horário ou número inventado é reprovado, com o local exato do problema.
 - As durações citadas no texto batem com as recalculadas, ou o documento é reprovado.
 - O relatório deixa separado o que foi **conferido pelo script** e o que é **opinião do modelo**.
-- Publicação aprovada no diretório da Anthropic, seguindo o modelo da nota 07 do vault.
+- Publicação aprovada no diretório de plugins da Anthropic.
 
 ### Fora da v1
 
@@ -336,7 +336,7 @@ Uma linha que não dá para interpretar não interrompe a execução: ela vai pa
 
 ## 16. Empacotamento
 
-Segue a nota 07 do vault:
+Segue o modelo de publicação de plugins:
 
 - `.claude-plugin/plugin.json` com `"skills": ["."]`, `marketplace.json` com `"source": "./"`, `version: 1.0.0`, licença MIT;
 - ícone 1024 px, PRIVACY.md, SECURITY.md, README PT/EN com as 9 seções obrigatórias;
@@ -350,7 +350,7 @@ Commits com a identidade noreply `lpalvess`.
 - **E2 rígido para números vindos de dashboards fora das evidências:** o caminho é anexar a exportação do dashboard (CSV) como evidência. O nível pode ser trocado para aviso.
 - **Marcos sem linha de log própria** (fim do impacto costuma ser ausência de erro): a evidência esperada é o ponto da métrica em CSV ou o evento de resolução do alerta.
 - **Detecção de nomes depende do mapa de membros:** sem mapa, L2 só pega @handles.
-- **Adoção baixa:** o valor maior é de portfólio, como já registrado na nota 05.
+- **Adoção baixa:** o público é de nicho, e o projeto também serve como referência de verificação determinística.
 
 ## 18. Fontes
 
